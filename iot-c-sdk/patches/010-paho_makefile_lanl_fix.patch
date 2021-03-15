@@ -1,0 +1,13 @@
+Index: iot-c-sdk-1.0.0/paho.mqtt.c/Makefile
+===================================================================
+--- iot-c-sdk-1.0.0.orig/paho.mqtt.c/Makefile
++++ iot-c-sdk-1.0.0/paho.mqtt.c/Makefile
+@@ -179,7 +179,7 @@ MQTTASYNC_INIT = MQTTAsync_init
+ START_GROUP = -Wl,--start-group
+ END_GROUP = -Wl,--end-group
+ 
+-GAI_LIB = -lanl
++GAI_LIB = 
+ EXTRA_LIB = -ldl
+ 
+ LDFLAGS_C += -Wl,-soname,lib$(MQTTLIB_C).so.${MAJOR_VERSION}

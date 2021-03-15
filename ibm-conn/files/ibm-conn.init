@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+
+start_service() {
+    local enabled
+    local org_id
+    local dev_type
+    local dev_id
+    local token
+    local port=8883
+
+    config_load 'ibm-conn'
+    config_get enabled ibm_sct 'enable' '0'
+    config_get org_id ibm_sct 'org_id' '-'
+    config_get dev_type ibm_sct 'dev_type' '-'
+    config_get dev_id ibm_sct 'dev_id' '-'
+    config_get token ibm_sct 'token' '-'
+
+    if  [ "$enabled" -eq 1 ]; then
+        procd_open_instance
+        procd_set_param env WIOTP_IDENTITY_ORGID="$org_id" WIOTP_IDENTITY_TYPEID="$dev_type" WIOTP_IDENTITY_DEVICEID="$dev_id" WIOTP_AUTH_TOKEN="$token" WIOTP_OPTIONS_MQTT_PORT="$port"
+        procd_set_param command /usr/bin/ibm-conn --useEnv
+        procd_set_param pidfile /var/run/ibm-conn.pid
+        procd_set_param file /etc/config/ibm-conn
+        procd_close_instance
+    fi
+}
+
+service_triggers() {
+    procd_add_reload_trigger "ibm-conn"
+}
+
+reload_service() {
+    stop
+    start
+}
